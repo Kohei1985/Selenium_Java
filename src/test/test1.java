@@ -19,7 +19,7 @@ public class test1 {
       WebElement element = driver.findElement(By.linkText("札幌市公共施設予約情報システムへ"));
       //画像のリンクをクリック
       element.click();
-      
+
 //      WebElement searchBox = driver.findElement(By.name("q"));
 //      searchBox.sendKeys("ChromeDriver");
 //      searchBox.submit();

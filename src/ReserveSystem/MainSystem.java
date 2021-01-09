@@ -47,7 +47,7 @@ public class MainSystem {
 
             //エクセルファイルへアクセスしてID番号を取得する--------------------------------------
             Workbook excel;
-            excel = WorkbookFactory.create(new File("data_file/ReserveDataSeparated.xlsx"));//Excelfileにアクセス
+            excel = WorkbookFactory.create(new File("/Users/yamamotokouhei/Documents/Selenium_Java/ReserveDataSeparated.xlsx"));//Excelfileにアクセス
             Sheet sheet = excel.getSheet("Sheet2");// <--ここでシート名を指定**(自分の担当はsheet2)**
             for (int i = 23; i <= 23; i++) { //<----エクセルの範囲指定はここ！！1~26までの数字
                 Row row = sheet.getRow(i); //行を読み込み

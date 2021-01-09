@@ -31,6 +31,7 @@ public class MainSystem {
                 //施設名称:
         Yoyakukun yoyaku01 = new Yoyakukun("スポーツ（屋内）", "サロンフットボール・フットサル", "札幌市", "中島","2021/02/01","2021/02/27");
                                 //割り当て↑("-施設区分-","-利用目的-","-札幌市（固定）-","-施設名称01-","-検索範囲開始日-","-検索範囲終了日-")
+        String reserveDate = "2月4日";//<----ここに予約したい日付を入れる
         try {
             System.out.println(yoyaku01.getPlaceName());
 
@@ -94,14 +95,16 @@ public class MainSystem {
                 element09.click();//検索をクリック
              //カレンダーが表示されて予約する日にちを指定--------------------------------------------------------------------------
                 Thread.sleep(2000);
-                String k = "2月4日";//<----ここに予約したい日付を入れる
-                WebElement element10 = driver.findElement(By.xpath("//a[contains(@title,'"+ k +"')]"));
+                WebElement element10 = driver.findElement(By.xpath("//a[contains(@title,'"+ reserveDate +"')]"));
                 element10.click();//カレンダー上の日付をクリック
              //つどーむ（スポーツ交流）の時はA面(=li.get(0))かB面(=li.get(1))を選択-------------------------
-                List<WebElement> li = driver.findElements(By.linkText("選択"));;
-                Thread.sleep(2000);
-                li.get(1).click();
-                Thread.sleep(2000);
+                String placeName = yoyaku01.getPlaceName();
+                if(placeName.equals("スポーツ交流")){
+                    Thread.sleep(2000);
+                    List<WebElement> li = driver.findElements(By.linkText("選択"));;
+                    Thread.sleep(2000);
+                    li.get(1).click();
+                }
              //時間帯を指定------------------------------------------------------------------------
                 for(int j = 0; j < 1; j++){//予約を"j"回繰り返す <---ここの数字を変更で繰り返し回数指定
                     jse.executeScript("window.scrollBy(0,500)", "");//500px下にスクロール
@@ -113,7 +116,7 @@ public class MainSystem {
                     jse.executeScript("window.scrollBy(0,600)", "");//500px下にスクロール
                     WebElement element13 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$btnShinsei"));
                     element13.click();//予約完了
-                    System.out.println(yoyaku01.getPlaceName() +"/"+ k + "をID" + value + "で予約しました。" );
+                    System.out.println(yoyaku01.getPlaceName() +"/"+ reserveDate + "をID" + value + "で予約しました。" );
                     //戻るボタン2回
                     driver.navigate().back();
                     driver.navigate().back();

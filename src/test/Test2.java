@@ -3,7 +3,7 @@ package test;
 import java.util.ArrayList;
 import java.util.List;
 
-import ReserveSystem.Yoyakukun;
+import reserve.Yoyakukun;
 
 public class Test2 {
 
@@ -13,14 +13,12 @@ public class Test2 {
         if(placeName.equals("スポーツ交流")){
             System.out.println("等しい");
         }
-        List<String> reserveDates = new ArrayList<>();
-        reserveDates.add("2月4日");
-        reserveDates.add("2月11日");
-        reserveDates.add("2月18日");
-        reserveDates.add("2月25日");
+        List<String> days = new ArrayList<>();
+        days.add("4");
 
-        for(String reserveDate : reserveDates){
-            System.out.println(reserveDate);
+        String month = "2";
+        for(String day : days){
+            System.out.println(month + "月" + day + "日");
         }
 
     }

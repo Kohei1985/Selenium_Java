@@ -1,4 +1,4 @@
-package ReserveSystem;
+package reserve;
 
 public class Yoyakukun {
     //フィールド

@@ -31,6 +31,7 @@ public class MainSystem {
                 //施設名称:
         Yoyakukun yoyaku01 = new Yoyakukun("スポーツ（屋内）", "サロンフットボール・フットサル", "札幌市", "中島","2021/02/01","2021/02/27");
                                 //割り当て↑("-施設区分-","-利用目的-","-札幌市（固定）-","-施設名称01-","-検索範囲開始日-","-検索範囲終了日-")
+        
         String reserveDate = "2月4日";//<----ここに予約したい日付を入れる
         try {
             System.out.println(yoyaku01.getPlaceName());

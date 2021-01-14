@@ -3,6 +3,7 @@ package reserve;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.poi.EncryptedDocumentException;
@@ -74,7 +75,8 @@ public class MainSystemOpenSchool {
                 System.out.println("No." + i); //件数
                 System.out.println("ID:" + id + "/Password:" + pass); //取得したデータを出力
                 if (id == null || id.equals("")) {
-                    driver.quit();
+                    System.out.println("ExcelFileにデータがありません");
+                    break;
                 }
 
                 //ログイン画面を開く--------------------------------------------------------
@@ -103,6 +105,11 @@ public class MainSystemOpenSchool {
                 //施設の予約検索オペレーション--------------------------------------------------------------------
                 for (String place : places) {
                     yoyaku01.setPlaceName(place);
+                    if(yoyaku01.getPlaceName() == null || yoyaku01.getPlaceName().equals("")){
+                        int noPlace = places.indexOf("")+1;
+                        System.out.println("会場リストの" + noPlace + "番目に会場の指定がありません");
+                        break;
+                    }
                     Thread.sleep(2000);//2秒待機
                     driver.navigate().refresh(); //ページをリフレッシュ
                     jse.executeScript("window.scrollBy(0,300)", "");//500px下にスクロール
@@ -130,29 +137,21 @@ public class MainSystemOpenSchool {
                     //カレンダーが表示されて予約する日にちを指定--------------------------------------------------------------------------
                     List<String> reserveDays = new ArrayList<>();
                     if (yoyaku01.getPlaceName() == "新琴似") {
-                        reserveDays.add(shinkotoni.getReserveDate01());//<--予約したい日を指定。
-                        reserveDays.add(shinkotoni.getReserveDate02());//<--予約したい日を指定。
-                        reserveDays.add(shinkotoni.getReserveDate03());//<--予約したい日を指定。
-                        reserveDays.add(shinkotoni.getReserveDate04());//<--予約したい日を指定。
-                        reserveDays.add(shinkotoni.getReserveDate05());//<--予約したい日を指定。
-                        reserveDays.add(shinkotoni.getReserveDate06());//<--予約したい日を指定。
+                        Collections.addAll(reserveDays,shinkotoni.getReserveDate01(),shinkotoni.getReserveDate02(),
+                                                        shinkotoni.getReserveDate03(),shinkotoni.getReserveDate04(),
+                                                        shinkotoni.getReserveDate05(),shinkotoni.getReserveDate06());//DateByPlaceクラスからリストに日にちを格納
                     }
                     if (yoyaku01.getPlaceName() == "手稲山口") {
-                        reserveDays.add(teine.getReserveDate01());//<--予約したい日を指定。
-                        reserveDays.add(teine.getReserveDate02());//<--予約したい日を指定。
-                        reserveDays.add(teine.getReserveDate03());//<--予約したい日を指定。
-                        reserveDays.add(teine.getReserveDate04());//<--予約したい日を指定。
-                        reserveDays.add(teine.getReserveDate05());//<--予約したい日を指定。
-                        reserveDays.add(teine.getReserveDate06());//<--予約したい日を指定。
+                        Collections.addAll(reserveDays,teine.getReserveDate01(),teine.getReserveDate02(),
+                                teine.getReserveDate03(),teine.getReserveDate04(),
+                                teine.getReserveDate05(),teine.getReserveDate06());//DateByPlaceクラスからリストに日にちを格納
                     }
                     if (yoyaku01.getPlaceName() == "新陵中") {
-                        reserveDays.add(shinryo.getReserveDate01());//<--予約したい日を指定。
-                        reserveDays.add(shinryo.getReserveDate02());//<--予約したい日を指定。
-                        reserveDays.add(shinryo.getReserveDate03());//<--予約したい日を指定。
-                        reserveDays.add(shinryo.getReserveDate04());//<--予約したい日を指定。
-                        reserveDays.add(shinryo.getReserveDate05());//<--予約したい日を指定。
-                        reserveDays.add(shinryo.getReserveDate06());//<--予約したい日を指定。
+                        Collections.addAll(reserveDays,shinryo.getReserveDate01(),shinryo.getReserveDate02(),
+                                shinryo.getReserveDate03(),shinryo.getReserveDate04(),
+                                shinryo.getReserveDate05(),shinryo.getReserveDate06());//DateByPlaceクラスからリストに日にちを格納
                     }
+
                     //ここから繰り返し処理
                     for (String reserveDay : reserveDays) {
                         Thread.sleep(2000);
@@ -165,7 +164,9 @@ public class MainSystemOpenSchool {
                         //日付から曜日を取得して曜日によって指定する時間帯を変える　曜日の取得　土日は13時から・平日は18時から
                         ReserveDateController rdc = new ReserveDateController(); //曜日取得のオブジェクトを生成
                         String youbi = rdc.getYoubi("2021", reserveMonth, reserveDay); //曜日を取得する
-                        if (youbi.equals("日曜") || youbi.equals("土曜")) { //土曜日日曜日の時
+                        if(reserveDay.equals("") || reserveDay == null){
+                            System.out.println("日にちの指定がありません");
+                        }else if (youbi.equals("日曜") || youbi.equals("土曜")) { //土曜日日曜日の時
                             WebElement element11a = driver.findElement(By.id("ctl00_ContentPlaceHolder1_JikantaiSel6"));
                             element11a.click();//時間帯を指定
                         } else { //平日の時

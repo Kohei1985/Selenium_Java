@@ -3,6 +3,7 @@ package test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -50,30 +51,26 @@ public class Test3 {
             }
             for (String place : places) {
                 yoyaku01.setPlaceName(place);
+                if(yoyaku01.getPlaceName() == null || yoyaku01.getPlaceName().equals("")){
+                    int noPlace = places.indexOf("")+1;
+                    System.out.println("会場リストの" + noPlace + "番目に会場の指定がありません");
+                    break;
+                }
                 List<String> reserveDays = new ArrayList<>();
                 if (yoyaku01.getPlaceName() == "新琴似") {
-                    reserveDays.add(shinkotoni.getReserveDate01());//<--予約したい日を指定。
-                    reserveDays.add(shinkotoni.getReserveDate02());//<--予約したい日を指定。
-                    reserveDays.add(shinkotoni.getReserveDate03());//<--予約したい日を指定。
-                    reserveDays.add(shinkotoni.getReserveDate04());//<--予約したい日を指定。
-                    reserveDays.add(shinkotoni.getReserveDate05());//<--予約したい日を指定。
-                    reserveDays.add(shinkotoni.getReserveDate06());//<--予約したい日を指定。
+                    Collections.addAll(reserveDays,shinkotoni.getReserveDate01(),shinkotoni.getReserveDate02(),
+                                                    shinkotoni.getReserveDate03(),shinkotoni.getReserveDate04(),
+                                                    shinkotoni.getReserveDate05(),shinkotoni.getReserveDate06());//DateByPlaceクラスからリストに日にちを格納
                 }
                 if (yoyaku01.getPlaceName() == "手稲山口") {
-                    reserveDays.add(teine.getReserveDate01());//<--予約したい日を指定。
-                    reserveDays.add(teine.getReserveDate02());//<--予約したい日を指定。
-                    reserveDays.add(teine.getReserveDate03());//<--予約したい日を指定。
-                    reserveDays.add(teine.getReserveDate04());//<--予約したい日を指定。
-                    reserveDays.add(teine.getReserveDate05());//<--予約したい日を指定。
-                    reserveDays.add(teine.getReserveDate06());//<--予約したい日を指定。
+                    Collections.addAll(reserveDays,teine.getReserveDate01(),teine.getReserveDate02(),
+                            teine.getReserveDate03(),teine.getReserveDate04(),
+                            teine.getReserveDate05(),teine.getReserveDate06());//DateByPlaceクラスからリストに日にちを格納
                 }
                 if (yoyaku01.getPlaceName() == "新陵中") {
-                    reserveDays.add(shinryo.getReserveDate01());//<--予約したい日を指定。
-                    reserveDays.add(shinryo.getReserveDate02());//<--予約したい日を指定。
-                    reserveDays.add(shinryo.getReserveDate03());//<--予約したい日を指定。
-                    reserveDays.add(shinryo.getReserveDate04());//<--予約したい日を指定。
-                    reserveDays.add(shinryo.getReserveDate05());//<--予約したい日を指定。
-                    reserveDays.add(shinryo.getReserveDate06());//<--予約したい日を指定。
+                    Collections.addAll(reserveDays,shinryo.getReserveDate01(),shinryo.getReserveDate02(),
+                            shinryo.getReserveDate03(),shinryo.getReserveDate04(),
+                            shinryo.getReserveDate05(),shinryo.getReserveDate06());//DateByPlaceクラスからリストに日にちを格納
                 }
 
                 for (String reserveDay : reserveDays) {
@@ -82,11 +79,15 @@ public class Test3 {
                     ReserveDateController rdc = new ReserveDateController();
 
                     String youbi = rdc.getYoubi("2021", reserveMonth, reserveDay);
-                    if (youbi.equals("日曜") || youbi.equals("土曜")) { //土曜日日曜日の時
+                    if(reserveDay.equals("") || reserveDay == null){
+                        System.out.println("日にちの指定がありません");
+                    }else if (youbi.equals("日曜") || youbi.equals("土曜")) { //土曜日日曜日の時
                         System.out.println("土日の予約を実行");
 
                     } else { //平日の時
                         System.out.println("平日の予約を実行");
+
+
                     }
                 }
             }

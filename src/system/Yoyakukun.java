@@ -1,13 +1,14 @@
-package reserve;
+package system;
 
 public class Yoyakukun {
     //フィールド
     private String usePlace;
     private String usePurpose;
     private String district = "札幌市";
-    private String placeName;
+    private String placeName ;
     private String startDate;
     private String endDate;
+    private String reserveDate;
 
     //引数なしコンストラクタ
     public Yoyakukun (){
@@ -15,13 +16,15 @@ public class Yoyakukun {
     //引数ありコンストラクタ
     public Yoyakukun (String usePlace, String usePurpose,
                     String district, String placeName,
-                    String startDate, String endDate){
+                    String startDate, String endDate,
+                    String reserveDate){
         this.usePlace = usePlace;
         this.usePurpose = usePurpose;
         this.district = district;
         this.placeName = placeName;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.reserveDate = reserveDate;
     }
     //getter/setter
     public String getUsePlace() {
@@ -59,6 +62,12 @@ public class Yoyakukun {
     }
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+    public String getReserveDate() {
+        return reserveDate;
+    }
+    public void setReserveDate(String reserveDate) {
+        this.reserveDate = reserveDate;
     }
 
 }

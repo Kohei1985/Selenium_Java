@@ -1,4 +1,4 @@
-package reserve;
+package system;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -6,8 +6,13 @@ import java.util.Calendar;
 public class ReserveDateController {
 
 
-    public static String getYoubi(String ymd){
+    public String getYoubi(String yyyy, String mm, String dd){
         try{
+            int rmInt = Integer.parseInt(mm);       //月をint型に変換※intにしないとゼロ埋めができないため
+            int rdInt = Integer.parseInt(dd);       //日をint型に変換
+            String rmStr = String.format("%02d", rmInt);    //月をゼロ埋めしてStringに戻す
+            String rdStr = String.format("%02d", rdInt);    //日をゼロ埋めしてStringに戻す
+            String ymd = yyyy + rmStr + rdStr;
           //曜日
           String youbi[] = {"日曜","月曜","火曜","水曜","木曜","金曜","土曜"};
 

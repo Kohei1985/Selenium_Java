@@ -2,6 +2,7 @@ package reserve;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.EncryptedDocumentException;
@@ -19,6 +20,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import system.Yoyakukun;
+
 public class MainSystem {
 
     public static void main(String[] args) throws InterruptedException {
@@ -29,9 +32,13 @@ public class MainSystem {
                 //利用目的(要素1):屋外サッカー->004,サロンフットボール・フットサル->029,サロンフットボール・フットサル->064,サッカー->052,
                 //地域(要素2):指定なし（初期値:"札幌市")
                 //施設名称:
-        Yoyakukun yoyaku01 = new Yoyakukun("スポーツ（屋内）", "サロンフットボール・フットサル", "札幌市", "中島","2021/02/01","2021/02/27");
+        Yoyakukun yoyaku01 = new Yoyakukun("スポーツ（屋内）", "サロンフットボール・フットサル", "札幌市", null,"2021/02/01","2021/02/27",null);
                                 //割り当て↑("-施設区分-","-利用目的-","-札幌市（固定）-","-施設名称01-","-検索範囲開始日-","-検索範囲終了日-")
-        
+        List<String> places = new ArrayList<>();
+        places.add("中島");
+        places.add("スポーツ交流");
+
+
         String reserveDate = "2月4日";//<----ここに予約したい日付を入れる
         try {
             System.out.println(yoyaku01.getPlaceName());

@@ -192,7 +192,7 @@ public class MainSystemOpenSchool {
                         jse.executeScript("window.scrollBy(0,600)", "");//600px下にスクロール
                         WebElement element13 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$btnShinsei"));
                         element13.click();//予約完了
-                        System.out.println(yoyaku01.getPlaceName() + "/" + reserveMonth + "月" + reserveDay + "日をID"
+                        System.out.println(yoyaku01.getPlaceName() + "/" + reserveMonth + "月" + reserveDay + "日" + youbi + "をID"
                                 + id + "で予約しました。");
                         //”別の日を指定して予約する”ボタンをクリックする
                         jse.executeScript("window.scrollBy(0,300)", "");//600px下にスクロール

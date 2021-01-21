@@ -7,7 +7,6 @@ public class DateByPlaceMaster {
     private String reserveDate03;
     private String reserveDate04;
     private String reserveDate05;
-    private String reserveDate06;
 
 
     //引数なしコンストラクタ
@@ -16,13 +15,12 @@ public class DateByPlaceMaster {
     }
     //引数ありコンストラクタ
     public DateByPlaceMaster(String reserveDate01,String reserveDate02,String reserveDate03,
-            String reserveDate04,String reserveDate05,String reserveDate06){
+            String reserveDate04,String reserveDate05){
         this.reserveDate01 = reserveDate01;
         this.reserveDate02 = reserveDate02;
         this.reserveDate03 = reserveDate03;
         this.reserveDate04 = reserveDate04;
         this.reserveDate05 = reserveDate05;
-        this.reserveDate06 = reserveDate06;
     }
     public String getReserveDate01() {
         return reserveDate01;
@@ -53,12 +51,6 @@ public class DateByPlaceMaster {
     }
     public void setReserveDate05(String reserveDate05) {
         this.reserveDate05 = reserveDate05;
-    }
-    public String getReserveDate06() {
-        return reserveDate06;
-    }
-    public void setReserveDate06(String reserveDate06) {
-        this.reserveDate06 = reserveDate06;
     }
 
 

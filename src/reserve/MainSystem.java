@@ -22,6 +22,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import system.DateByPlaceMaster;
+import system.LineNotify;
 import system.ReserveDateController;
 import system.Yoyakukun;
 
@@ -29,7 +30,10 @@ public class MainSystem {
 
     public static void main(String[] args) throws InterruptedException {
         //インスタンスを生成
-
+        //Line通知
+        String トークン = "DedPHNC064l3dPTeH9RhPvougOz9TwWmscqroCZtBE8";
+        LineNotify lineNotify = new LineNotify(トークン);
+            
         //引数の中に以下の項目を番号で設定
         //利用場所(要素0):スポーツ屋外->01,スポーツ屋内->02,学校開放(内)->03,学校開放(外)->04
         //利用目的(要素1):屋外サッカー->004,サロンフットボール・フットサル->029,サロンフットボール・フットサル->064,サッカー->052,
@@ -197,14 +201,17 @@ public class MainSystem {
                 logout.click();//ログアウトして次のID番号へ繰り返し
 
             }
-
+            
             driver.quit();
+            lineNotify.notify("sheet No."+ sheet +"の予約が完了しました。");
 
         } catch (EncryptedDocumentException | IOException e) {
             e.printStackTrace();
+            lineNotify.notify("予約システムにエラーが発生しました。確認してください。");
 
         } catch (InterruptedException e) {
             e.printStackTrace();
+            lineNotify.notify("予約システムにエラーが発生しました。確認してください。");
         }
 
     }

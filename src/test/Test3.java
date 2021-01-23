@@ -94,7 +94,7 @@ public class Test3 {
                     System.out.println("会場:" + yoyaku01.getPlaceName() + "/目的:"+yoyaku01.getUsePurpose()  + yoyaku01.getReserveDate());
 
                     String youbi = rdc.getYoubi("2021", reserveMonth, reserveDay); //曜日を取得する
-                    String cellNo = "0";
+                    String cellNo = "0"; 
                     if(yoyaku01.getPlaceName() =="新陵中" || yoyaku01.getPlaceName().equals("新陵中")){
                         cellNo = "0";
                     }else if (youbi.equals("日曜") || youbi.equals("土曜")) { //土曜日日曜日の時

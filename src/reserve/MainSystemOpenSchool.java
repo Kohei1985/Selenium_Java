@@ -22,6 +22,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import system.DateByPlaceMaster;
+import system.LineNotify;
 import system.ReserveDateController;
 import system.Yoyakukun;
 
@@ -29,7 +30,8 @@ public class MainSystemOpenSchool {
 
     public static void main(String[] args) throws InterruptedException {
         //インスタンスを生成
-
+        String トークン = "DedPHNC064l3dPTeH9RhPvougOz9TwWmscqroCZtBE8";
+        LineNotify lineNotify = new LineNotify(トークン);
         //引数の中に以下の項目を番号で設定
         //利用場所(要素0):スポーツ屋外->01,スポーツ屋内->02,学校開放（屋内）->03,学校開放（屋外）->04
         //利用目的(要素1):屋外サッカー->004,サロンフットボール・フットサル->029,サロンフットボール・フットサル->064,サッカー->052,
@@ -63,7 +65,8 @@ public class MainSystemOpenSchool {
             Workbook excel;
             excel = WorkbookFactory
                     .create(new File("/Users/yamamotokouhei/Documents/Selenium_Java/ReserveDataSeparated.xlsx"));//Excelfileにアクセス
-            Sheet sheet = excel.getSheet("sheet2");// <--ここでシート名を指定**(自分の担当はsheet2)**
+            String sheetName = "sheet2";// <--ここでシート名を指定**(自分の担当はsheet2)**
+            Sheet sheet = excel.getSheet(sheetName);
             for (int i = 1; i <= 25; i++) { //<----エクセルの範囲指定はここ！！1~26までの数字
                 Row rowC = sheet.getRow(i); //行を読み込み
                 Cell cellId = rowC.getCell(2); //Cellを指定(ここは固定)
@@ -135,7 +138,7 @@ public class MainSystemOpenSchool {
                     WebElement element09 = driver
                             .findElement(By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$btnSearch"));
                     element09.click();//検索をクリック
-                    //カレンダーが表示されて予約する日にちを指定--------------------------------------------------------------------------
+                    //List　"reserveDays"に施設ごとの予約してい日を格納し、拡張for文でreserveDayを繰り返す処理
                     List<String> reserveDays = new ArrayList<>();
                     if (yoyaku01.getPlaceName() == "新琴似小") {
                         Collections.addAll(reserveDays,school01.getReserveDate01(),school01.getReserveDate02(),
@@ -165,6 +168,7 @@ public class MainSystemOpenSchool {
                             break;
                         }
 
+                     //カレンダーが表示されて予約する日にちを指定--------------------------------------------------------------------------
                         jse.executeScript("window.scrollBy(0,300)", "");//300px下にスクロール
                         Thread.sleep(2000);
                         WebElement element10 = driver
@@ -176,16 +180,18 @@ public class MainSystemOpenSchool {
                         //日付から曜日を取得して曜日によって指定する時間帯を変える　曜日の取得　土日は13時から・平日は18時から
                         ReserveDateController rdc = new ReserveDateController(); //曜日取得のオブジェクトを生成
                         String youbi = rdc.getYoubi("2021", reserveMonth, reserveDay); //曜日を取得する
-                         if(yoyaku01.getPlaceName() =="新陵中" || yoyaku01.getPlaceName().equals("新陵中")){
-                             WebElement elementShinryouchu = driver.findElement(By.id("ctl00_ContentPlaceHolder1_JikantaiSel0"));
-                             elementShinryouchu.click();//時間帯を指定
+                        String cellNo = "0"; //時間帯指定のテーブルデータの何番目かを指定。(0~5)
+                        if(yoyaku01.getPlaceName() =="新陵中" || yoyaku01.getPlaceName().equals("新陵中")){
+                            cellNo = "0";
                         }else if (youbi.equals("日曜") || youbi.equals("土曜")) { //土曜日日曜日の時
-                            WebElement element11a = driver.findElement(By.id("ctl00_ContentPlaceHolder1_JikantaiSel3"));
-                            element11a.click();//時間帯を指定　
+                            cellNo = "3";
                         } else { //平日の時id:ctl00_ContentPlaceHolder1_JikantaiSel0
-                            WebElement element11b = driver.findElement(By.id("ctl00_ContentPlaceHolder1_JikantaiSel0"));
-                            element11b.click();//時間帯を指定
+                            cellNo = "0";
                         }
+                         
+                        WebElement element11 = driver.findElement(By.id("ctl00_ContentPlaceHolder1_JikantaiSel"+ cellNo));
+                        element11.click();//時間帯を指定
+                        
                         WebElement element12 = driver.findElement(By.id("ctl00_ContentPlaceHolder1_btnShinseiCnf"));
                         element12.click();//申請
                         //申し込み申請確認----------------------------------------------------------------------
@@ -212,6 +218,7 @@ public class MainSystemOpenSchool {
                 logout.click();//ログアウトして次のID番号へ繰り返し
 
             }
+            lineNotify.notify();
             driver.quit();
 
         } catch (EncryptedDocumentException | IOException e) {

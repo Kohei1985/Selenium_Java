@@ -38,14 +38,13 @@ public class MainSystemOpenSchoolAll {
         //引数の中に以下の項目を番号で設定
         //利用場所(要素0):スポーツ屋外->01,スポーツ屋内->02,学校開放（屋内）->03,学校開放（屋外）->04
         //利用目的(要素1):屋外サッカー->004,サロンフットボール・フットサル->029,サロンフットボール・フットサル->064,サッカー->052,
-        //地域(要素2):指定なし（初期値:"札幌市")
-        //施設名称:
+
+        String reserveMonth = "3"; //<-月を指定
         //各コーチの担当日時場所を格納　データ無しの場合はnoneを入れる。
         Person person1 = new Person("雉子谷","sheet1","新琴似小/1/2/3","手稲山口小/4/5/6","新陵中/7/8/9","none/none/none/none");
         Person person2 = new Person("浩平","sheet2","新琴似小/1/2/3","手稲山口小/4/5/6","新陵中/7/8/9","none/none/none/none");
         Person person3 = new Person("タオ・庄司","sheet3","新琴似小/1/2/3","手稲山口小/4/5/6","新陵中/7/8/9","none/none/none/none");
         Person person4 = new Person("前田","sheet4","新琴似小/1/2/3","手稲山口小/4/5/6","新陵中/7/8/9","none/none/none/none");
-        String reserveMonth = "3"; //<-月を指定
 
 //---------------------------------------------------------------------------------------------
 //              日付を格納するインスタンスを生成
@@ -61,8 +60,6 @@ public class MainSystemOpenSchoolAll {
         LineNotify lineNotify = new LineNotify(トークン);//ライン
         String msg = ""; //送信内容を格納する変数
         String Name = ""; //シートに合わせて名前を格納する変数
-        List<String> places = new ArrayList<>();
-        Collections.addAll(places, "新琴似小","手稲山口小","新陵中","屯田北小");  //,<-ここに予約したい施設名を追加*138行目以降のschoolの個数と確認
         List<String> sheetNames = new ArrayList<String>();
         Collections.addAll(sheetNames, person1.getSheet_nm(), person2.getSheet_nm(), person3.getSheet_nm(),person4.getSheet_nm());//"sheet1", "sheet2", "sheet3",
 //          ...................................................................
@@ -89,8 +86,10 @@ public class MainSystemOpenSchoolAll {
             Workbook excel;
             excel = WorkbookFactory
                     .create(new File("/Users/yamamotokouhei/Documents/Selenium_Java/ReserveDataSeparated.xlsx"));//Excelfileにアクセス
+            //人数分のエクセルシートを繰り返し処理
             for (String sheetName : sheetNames){
                 Sheet sheet = excel.getSheet(sheetName);
+                List<String> chk_places = new ArrayList<>();
                 if(sheetName == "sheet1"){
                     Name = person1.getCoach_nm();
                     String rsv1 = person1.getRsv_info01();
@@ -101,6 +100,7 @@ public class MainSystemOpenSchoolAll {
                     List<String> instracts02 = Arrays.asList(rsv2.split("/"));
                     List<String> instracts03 = Arrays.asList(rsv3.split("/"));
                     List<String> instracts04 = Arrays.asList(rsv4.split("/"));
+                    Collections.addAll(chk_places,instracts01.get(0),instracts02.get(0),instracts03.get(0),instracts04.get(0));  //,<-ここに予約したい施設名を追加*138行目以降のschoolの個数と確認
                     school01.setReserveDate01(instracts01.get(1));
                     school01.setReserveDate02(instracts01.get(2));
                     school01.setReserveDate03(instracts01.get(3));
@@ -127,6 +127,7 @@ public class MainSystemOpenSchoolAll {
                     List<String> instracts02 = Arrays.asList(rsv2.split("/"));
                     List<String> instracts03 = Arrays.asList(rsv3.split("/"));
                     List<String> instracts04 = Arrays.asList(rsv4.split("/"));
+                    Collections.addAll(chk_places,instracts01.get(0),instracts02.get(0),instracts03.get(0),instracts04.get(0));  //,<-ここに予約したい施設名を追加*138行目以降のschoolの個数と確認
                     school01.setReserveDate01(instracts01.get(1));
                     school01.setReserveDate02(instracts01.get(2));
                     school01.setReserveDate03(instracts01.get(3));
@@ -153,6 +154,7 @@ public class MainSystemOpenSchoolAll {
                     List<String> instracts02 = Arrays.asList(rsv2.split("/"));
                     List<String> instracts03 = Arrays.asList(rsv3.split("/"));
                     List<String> instracts04 = Arrays.asList(rsv4.split("/"));
+                    Collections.addAll(chk_places,instracts01.get(0),instracts02.get(0),instracts03.get(0),instracts04.get(0));  //,<-ここに予約したい施設名を追加*138行目以降のschoolの個数と確認
                     school01.setReserveDate01(instracts01.get(1));
                     school01.setReserveDate02(instracts01.get(2));
                     school01.setReserveDate03(instracts01.get(3));
@@ -179,6 +181,7 @@ public class MainSystemOpenSchoolAll {
                     List<String> instracts02 = Arrays.asList(rsv2.split("/"));
                     List<String> instracts03 = Arrays.asList(rsv3.split("/"));
                     List<String> instracts04 = Arrays.asList(rsv4.split("/"));
+                    Collections.addAll(chk_places,instracts01.get(0),instracts02.get(0),instracts03.get(0),instracts04.get(0));  //,<-ここに予約したい施設名を追加*138行目以降のschoolの個数と確認
                     school01.setReserveDate01(instracts01.get(1));
                     school01.setReserveDate02(instracts01.get(2));
                     school01.setReserveDate03(instracts01.get(3));
@@ -227,6 +230,8 @@ public class MainSystemOpenSchoolAll {
                     WebElement element04 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$btnLogin"));
                     element04.click();//"ログインをクリック"
 
+                    List<String> places = new ArrayList<>();
+                    Collections.addAll(places,"新琴似小","手稲山口小","新陵中","屯田北小");  //,<-ここに予約したい施設名を追加*138行目以降のschoolの個数と確認
                     for (String place : places) {
                         yoyaku01.setPlaceName(place);
                         if(yoyaku01.getPlaceName() == null || yoyaku01.getPlaceName().equals("")){
@@ -271,22 +276,23 @@ public class MainSystemOpenSchoolAll {
 
 
                         List<String> reserveDays = new ArrayList<>();
-                        if (yoyaku01.getPlaceName() == "新琴似小") {
+                        //Place(会場）のリストの順番と名前が予約設定情報と一致しているかチェックして一致していれば日付を格納する。-----
+                        if (yoyaku01.getPlaceName().equals(chk_places.get(0))) {
                             Collections.addAll(reserveDays,school01.getReserveDate01(),school01.getReserveDate02(),
                                     school01.getReserveDate03(),school01.getReserveDate04(),
                                     school01.getReserveDate05());//DateByPlaceクラスからリストに日にちを格納
                         }
-                        if (yoyaku01.getPlaceName() == "手稲山口小") {
+                        if (yoyaku01.getPlaceName().equals(chk_places.get(1))) {
                             Collections.addAll(reserveDays,school02.getReserveDate01(),school02.getReserveDate02(),
                                     school02.getReserveDate03(),school02.getReserveDate04(),
                                     school02.getReserveDate05());//DateByPlaceクラスからリストに日にちを格納
                         }
-                        if (yoyaku01.getPlaceName() == "新陵中") {
+                        if (yoyaku01.getPlaceName().equals(chk_places.get(2))) {
                             Collections.addAll(reserveDays,school03.getReserveDate01(),school03.getReserveDate02(),
                                     school03.getReserveDate03(),school03.getReserveDate04(),
                                     school03.getReserveDate05());//DateByPlaceクラスからリストに日にちを格納
                         }
-                        if (yoyaku01.getPlaceName() == "屯田北小") {
+                        if (yoyaku01.getPlaceName().equals(chk_places.get(3))) {
                             Collections.addAll(reserveDays,school04.getReserveDate01(),school04.getReserveDate02(),
                                     school04.getReserveDate03(),school04.getReserveDate04(),
                                     school04.getReserveDate05());//DateByPlaceクラスからリストに日にちを格納

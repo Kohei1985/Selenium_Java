@@ -33,21 +33,21 @@ public class MainSystem {
         //Line通知
         String トークン = "DedPHNC064l3dPTeH9RhPvougOz9TwWmscqroCZtBE8";
         LineNotify lineNotify = new LineNotify(トークン);
-            
+
         //引数の中に以下の項目を番号で設定
         //利用場所(要素0):スポーツ屋外->01,スポーツ屋内->02,学校開放(内)->03,学校開放(外)->04
         //利用目的(要素1):屋外サッカー->004,サロンフットボール・フットサル->029,サロンフットボール・フットサル->064,サッカー->052,
         //地域(要素2):指定なし（初期値:"札幌市")
         //施設名称:
-        Yoyakukun yoyaku01 = new Yoyakukun("スポーツ（屋内）", "サロンフットボール・フットサル", "札幌市", null, "2021/02/01", "2021/02/27",
+        Yoyakukun yoyaku01 = new Yoyakukun("スポーツ（屋内）", "サロンフットボール・フットサル", "札幌市", null, "2021/03/01", "2021/03/31",
                 null);
         //割り当て↑("-施設区分-","-利用目的-","-札幌市（固定）-","-施設名称01-","-検索範囲開始日-","-検索範囲終了日-")
         List<String> places = new ArrayList<>();
-        places.add("中島");   //=hall01
-        places.add("スポーツ交流");   //=hall02
-        String reserveMonth = "2"; //<-月を指定
-        DateByPlaceMaster hall01 = new DateByPlaceMaster("", "", "", "", ""); //
-        DateByPlaceMaster hall02 = new DateByPlaceMaster("27", "", "", "", "");
+        places.add("中島"); //=hall01
+        places.add("スポーツ交流"); //=hall02
+        String reserveMonth = "3"; //<-月を指定
+        DateByPlaceMaster hall01 = new DateByPlaceMaster("28", "30", "", "", ""); //
+        DateByPlaceMaster hall02 = new DateByPlaceMaster("18", "", "", "", "");
 
         try {
             System.out.println(yoyaku01.getPlaceName());
@@ -67,8 +67,13 @@ public class MainSystem {
             Workbook excel;
             excel = WorkbookFactory
                     .create(new File("/Users/yamamotokouhei/Documents/Selenium_Java/ReserveDataSeparated.xlsx"));//Excelfileにアクセス
-            Sheet sheet = excel.getSheet("sheet2");// <--ここでシート名を指定**(自分の担当はsheet2)**
-            for (int i = 1; i <= 25; i++) { //<----エクセルの範囲指定はここ！！1~26までの数字
+            String sheetName = "sheet2";// <--ここでシート名を指定**(自分の担当はsheet2)**
+//          ...................................................................
+//          sheet1 = 雉子谷さん    sheet2 = 浩平     sheet3 = タオ・庄司コーチ
+//          sheet4 = 前田コーチ
+//          ...................................................................
+            Sheet sheet = excel.getSheet(sheetName);
+            for (int i = 16; i <= 25; i++) { //<----エクセルの範囲指定はここ！！1~26までの数字
                 Row rowC = sheet.getRow(i); //行を読み込み
                 Cell cellId = rowC.getCell(2); //Cellを指定(ここは固定)
                 String id = cellId.getStringCellValue(); //指定した場所の文字列を取得
@@ -102,6 +107,26 @@ public class MainSystem {
                         int noPlace = places.indexOf("") + 1;
                         System.out.println("会場リストの" + noPlace + "番目に会場の指定がありません");
                     }
+                    //List　"reserveDays"に施設ごとの予約してい日を格納し、拡張for文でreserveDayを繰り返す処理
+                    List<String> reserveDays = new ArrayList<>();
+                    if (yoyaku01.getPlaceName() == "中島") {
+                        Collections.addAll(reserveDays, hall01.getReserveDate01(), hall01.getReserveDate02(),
+                                hall01.getReserveDate03(), hall01.getReserveDate04(),
+                                hall01.getReserveDate05());//DateByPlaceクラスからリストに日にちを格納
+                    }
+                    if (yoyaku01.getPlaceName() == "スポーツ交流") {
+                        Collections.addAll(reserveDays, hall02.getReserveDate01(), hall02.getReserveDate02(),
+                                hall02.getReserveDate03(), hall02.getReserveDate04(),
+                                hall02.getReserveDate05());//DateByPlaceクラスからリストに日にちを格納
+                    }
+
+                    //ここから繰り返し処理
+                    for (String reserveDay : reserveDays) {
+                        if (reserveDay.equals("") || reserveDay == null) {
+                            System.out.println("日にちの指定がありません。次の施設の予約に進みます。");
+                            break;
+                        }
+                        yoyaku01.setReserveDate(reserveMonth + "月" + reserveDay + "日");//YoyakukunインスタンスにReseveDateをセット
 
                     Thread.sleep(2000);
                     jse.executeScript("window.scrollBy(0,500)", "");//500px下にスクロール
@@ -131,55 +156,49 @@ public class MainSystem {
                     WebElement element09 = driver
                             .findElement(By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$btnSearch"));
                     element09.click();//検索をクリック
-                    //List　"reserveDays"に施設ごとの予約してい日を格納し、拡張for文でreserveDayを繰り返す処理
-                    List<String> reserveDays = new ArrayList<>();
-                    if (yoyaku01.getPlaceName() == "中島") {
-                        Collections.addAll(reserveDays, hall01.getReserveDate01(), hall01.getReserveDate02(),
-                                hall01.getReserveDate03(), hall01.getReserveDate04(),
-                                hall01.getReserveDate05());//DateByPlaceクラスからリストに日にちを格納
-                    }
-                    if (yoyaku01.getPlaceName() == "スポーツ交流") {
-                        Collections.addAll(reserveDays, hall02.getReserveDate01(), hall02.getReserveDate02(),
-                                hall02.getReserveDate03(), hall02.getReserveDate04(),
-                                hall02.getReserveDate05());//DateByPlaceクラスからリストに日にちを格納
-                    }
 
-                    //ここから繰り返し処理
-                    for (String reserveDay : reserveDays) {
-                        if (reserveDay.equals("") || reserveDay == null) {
-                            System.out.println("日にちの指定がありません。次の施設の予約に進みます。");
-                            break;
-                        }
-                        yoyaku01.setReserveDate(reserveMonth + "月" + reserveDay + "日");//YoyakukunインスタンスにReseveDateをセット
-                        //カレンダーが表示されて予約する日にちを指定--------------------------------------------------------------------------
+                    //カレンダーが表示されて予約する日にちを指定--------------------------------------------------------------------------
                         Thread.sleep(2000);
                         WebElement element10 = driver.findElement(
                                 By.xpath("//a[contains(@title,'" + yoyaku01.getReserveDate() + "')]"));
                         element10.click();//カレンダー上の日付をクリック
 
                         //つどーむ（スポーツ交流）の時はA面(=li.get(0))かB面(=li.get(1))を選択-------------------------
-                                String placeName = yoyaku01.getPlaceName();
-                                if (placeName.equals("スポーツ交流")) {
-                                    Thread.sleep(2000);
-                                    List<WebElement> li = driver.findElements(By.linkText("選択"));
-                                    ;
-                                    Thread.sleep(2000);
-                                    li.get(1).click();
-                                }
+                        String placeName = yoyaku01.getPlaceName();
+                        if (placeName.equals("スポーツ交流")) {
+                            Thread.sleep(2000);
+                            List<WebElement> li = driver.findElements(By.linkText("選択"));
+                            ;
+                            Thread.sleep(2000);
+                            if (i <= 13) {
+                                li.get(0).click();
+                            } else if (i >= 14) {
+                                li.get(1).click();
+                            }
+                        }
                         //曜日によって繰り返し処理の回数を変える(土日=2回,平日=4回)
                         ReserveDateController rdc = new ReserveDateController();
-                        String youbi = rdc.getYoubi("2021",reserveMonth,reserveDay);
+                        String youbi = rdc.getYoubi("2021", reserveMonth, reserveDay);
                         int times = 0;
-                        if(youbi.equals("日曜") || youbi.equals("土曜")){
+                        if (youbi.equals("日曜") || youbi.equals("土曜")) {
                             times = 2; //土日の繰り返し回数
-                        }else{
+                        } else {
                             times = 4; //平日の繰り返し回数
                         }
-                            for (int j = 0; j < times ; j++) {//予約を"j"回繰り返す <---ここの数字を変更で繰り返し回数指定
-                        //時間帯を指定------------------------------------------------------------------------
-
+                        for (int j = 0; j < times; j++) {//予約を"j"回繰り返す <---ここの数字を変更で繰り返し回数指定
+                            //時間帯を指定------------------------------------------------------------------------
                             jse.executeScript("window.scrollBy(0,500)", "");//500px下にスクロール
-                            WebElement element11 = driver.findElement(By.id("ctl00_ContentPlaceHolder1_JikantaiSel6"));
+                            //日付から曜日を取得して曜日によって指定する時間帯を変える　曜日の取得　土日は13時から・平日は18時から
+                            String cellNo = "0"; //時間帯指定のテーブルデータの何番目かを指定。(0~5)
+                            if (placeName == "スポーツ交流") {
+                                cellNo = "6";
+                            } else if (placeName == "中島" && youbi.equals("日曜") || youbi.equals("土曜")) { //土曜日日曜日の時
+                                cellNo = "5";
+                            } else { //平日の時id:ctl00_ContentPlaceHolder1_JikantaiSel5
+                                cellNo = "5";
+                            }
+                            WebElement element11 = driver
+                                    .findElement(By.id("ctl00_ContentPlaceHolder1_JikantaiSel" + cellNo));
                             element11.click();//時間帯を指定
                             WebElement element12 = driver.findElement(By.id("ctl00_ContentPlaceHolder1_btnShinseiCnf"));
                             element12.click();//申請
@@ -187,12 +206,18 @@ public class MainSystem {
                             jse.executeScript("window.scrollBy(0,600)", "");//500px下にスクロール
                             WebElement element13 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$btnShinsei"));
                             element13.click();//予約完了
-                            System.out.println(yoyaku01.getPlaceName() + "/" + yoyaku01.getReserveDate() + "をID:" + id + "で予約しました。");
+                            System.out.println(yoyaku01.getPlaceName() + "/" + yoyaku01.getReserveDate() + "をID:" + id
+                                    + "で予約しました。");
                             //戻るボタン2回
                             driver.navigate().back();
                             driver.navigate().back();
                         }
+                        jse.executeScript("window.scrollBy(0,300)", "");//600px下にスクロール
+                        //メニューに戻って別の施設の予約をする
+                        WebElement backToMenu = driver.findElement(By.linkText("メニューへ戻る"));
+                        backToMenu.click();//メニューへ戻る
                     }
+
                 }
                 Thread.sleep(3000);
                 //ログアウト---------------------------------------------------------
@@ -201,19 +226,23 @@ public class MainSystem {
                 logout.click();//ログアウトして次のID番号へ繰り返し
 
             }
-            
-            driver.quit();
-            lineNotify.notify("sheet No."+ sheet +"の予約が完了しました。");
 
-        } catch (EncryptedDocumentException | IOException e) {
+            driver.quit();
+            lineNotify.notify("sheet No." + sheetName + "の予約が完了しました。");
+
+        } catch (EncryptedDocumentException |
+
+                IOException e) {
             e.printStackTrace();
             lineNotify.notify("予約システムにエラーが発生しました。確認してください。");
 
         } catch (InterruptedException e) {
             e.printStackTrace();
             lineNotify.notify("予約システムにエラーが発生しました。確認してください。");
+        }catch (NullPointerException e) {
+            e.printStackTrace();
+            lineNotify.notify("予約システムにエラーが発生しました。確認してください。");
         }
-
     }
 
 }

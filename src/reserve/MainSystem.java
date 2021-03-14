@@ -39,15 +39,15 @@ public class MainSystem {
         //利用目的(要素1):屋外サッカー->004,サロンフットボール・フットサル->029,サロンフットボール・フットサル->064,サッカー->052,
         //地域(要素2):指定なし（初期値:"札幌市")
         //施設名称:
-        Yoyakukun yoyaku01 = new Yoyakukun("スポーツ（屋内）", "サロンフットボール・フットサル", "札幌市", null, "2021/03/01", "2021/03/31",
+        Yoyakukun yoyaku01 = new Yoyakukun("スポーツ（屋内）", "サロンフットボール・フットサル", "札幌市", null, "2021/04/01", "2021/04/30",
                 null);
         //割り当て↑("-施設区分-","-利用目的-","-札幌市（固定）-","-施設名称01-","-検索範囲開始日-","-検索範囲終了日-")
         List<String> places = new ArrayList<>();
         places.add("中島"); //=hall01
         places.add("スポーツ交流"); //=hall02
-        String reserveMonth = "3"; //<-月を指定
-        DateByPlaceMaster hall01 = new DateByPlaceMaster("28", "30", "", "", ""); //
-        DateByPlaceMaster hall02 = new DateByPlaceMaster("18", "", "", "", "");
+        String reserveMonth = "4"; //<-月を指定
+        DateByPlaceMaster hall01 = new DateByPlaceMaster("13", "18", "", "", ""); //
+        DateByPlaceMaster hall02 = new DateByPlaceMaster("22", "", "", "", "");
 
         try {
             System.out.println(yoyaku01.getPlaceName());
@@ -67,13 +67,13 @@ public class MainSystem {
             Workbook excel;
             excel = WorkbookFactory
                     .create(new File("/Users/yamamotokouhei/Documents/Selenium_Java/ReserveDataSeparated.xlsx"));//Excelfileにアクセス
-            String sheetName = "sheet2";// <--ここでシート名を指定**(自分の担当はsheet2)**
-//          ...................................................................
-//          sheet1 = 雉子谷さん    sheet2 = 浩平     sheet3 = タオ・庄司コーチ
-//          sheet4 = 前田コーチ
-//          ...................................................................
+            String sheetName = "sheet8";// <--ここでシート名を指定**(自分の担当はsheet2)**
+            //          ...................................................................
+            //          sheet1 = 雉子谷さん    sheet2 = 浩平     sheet3 = タオ・庄司コーチ
+            //          sheet4 = 前田コーチ　
+            //          ...................................................................
             Sheet sheet = excel.getSheet(sheetName);
-            for (int i = 16; i <= 25; i++) { //<----エクセルの範囲指定はここ！！1~26までの数字
+            for (int i = 24; i <= 24; i++) { //<----エクセルの範囲指定はここ！！1~26までの数字
                 Row rowC = sheet.getRow(i); //行を読み込み
                 Cell cellId = rowC.getCell(2); //Cellを指定(ここは固定)
                 String id = cellId.getStringCellValue(); //指定した場所の文字列を取得
@@ -127,38 +127,155 @@ public class MainSystem {
                             break;
                         }
                         yoyaku01.setReserveDate(reserveMonth + "月" + reserveDay + "日");//YoyakukunインスタンスにReseveDateをセット
+                        Thread.sleep(0500);
+                        jse.executeScript("window.scrollBy(0,400)", "");//500px下にスクロール
+                        //更新の場合
+                        WebElement updtElement = driver
+                                .findElement(By.id("ctl00_ContentPlaceHolder1_btnMenuUserEntry"));
+                        String url = updtElement.getAttribute("onMouseout");
 
-                    Thread.sleep(2000);
-                    jse.executeScript("window.scrollBy(0,500)", "");//500px下にスクロール
-                    WebElement element05 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$btnMenuShinseiSrch"));
-                    element05.click();//施設予約検索をクリック
-                    //施設の予約検索オペレーション--------------------------------------------------------------------
-                    Thread.sleep(3000);//3秒待機
-                    driver.navigate().refresh(); //ページをリフレッシュ
-                    jse.executeScript("window.scrollBy(0,300)", "");//500px下にスクロール
-                    Select dropdown01 = new Select(driver
-                            .findElement(By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$drpPurposeBunrui")));
-                    dropdown01.selectByVisibleText(yoyaku01.getUsePlace());//施設区分の選択
-                    Select dropdown02 = new Select(
-                            driver.findElement(By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$drpPurpose")));
-                    dropdown02.selectByVisibleText(yoyaku01.getUsePurpose());//利用目的の選択
-                    WebElement element06 = driver
-                            .findElement(By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$txtShisetsuMeisho"));
-                    element06.clear();//すでに文字が入っている場合のため、クリア処理
-                    element06.sendKeys(yoyaku01.getPlaceName());//施設名を入力する
-                    WebElement element07 = driver
-                            .findElement(By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$txtFromDate"));
-                    element07.sendKeys(yoyaku01.getStartDate());//検索範囲の開始日を入力する
-                    WebElement element08 = driver
-                            .findElement(By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$txtToDate"));
-                    element08.sendKeys(yoyaku01.getEndDate());//検索範囲の終了日を入力する
-                    Thread.sleep(3000);//3秒待機
-                    WebElement element09 = driver
-                            .findElement(By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$btnSearch"));
-                    element09.click();//検索をクリック
+                        Thread.sleep(0500);
+                        //更新のボタンがピンクになっている時更新を行う**************************************************
+                        if (url.equals("this.style.background='url(images/menu02_red.jpg)'")) {
+                            System.out.println("更新が必要です。更新します。");
+                            WebElement updElm01 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$btnMenuUserEntry"));
+                            updElm01.click(); //登録者情報 変更・削除クリック
+                            Thread.sleep(0500);
+                            jse.executeScript("window.scrollBy(0,1800)", "");//1800px下にスクロール
+                            WebElement updElm02 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$btnEdit"));
+                            updElm02.click(); //有効期限更新ボタンクリック
+                            jse.executeScript("window.scrollBy(0,0600)", "");//600px下にスクロール
+                            WebElement updElm03 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkUserKind"));
+                            updElm03.click();
+                            WebElement updElm04 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkDaihyousyaUserID"));
+                            updElm04.click();
+                            WebElement updElm05 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkFullName"));
+                            updElm05.click();
+                            WebElement updElm06 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkKanaName"));
+                            updElm06.click();
+                            WebElement updElm07 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkPostCode"));
+                            updElm07.click();
+                            WebElement updElm08 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkAddress"));
+                            updElm08.click();
+                            WebElement updElm09 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkBirthDay"));
+                            updElm09.click();
+                            WebElement updElm10 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkJitakuTel"));
+                            updElm10.click();
+                            WebElement updElm11 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkJitakuFax"));
+                            updElm11.click();
+                            WebElement updElm12 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkMoboleTel"));
+                            updElm12.click();
+                            WebElement updElm13 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkRenrakusakiTel"));
+                            updElm13.click();
+                            jse.executeScript("window.scrollBy(0,0400)", "");//600px下にスクロール
+                            WebElement updElm14 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkEmail"));
+                            updElm14.click();
+                            WebElement updElm15 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkHogoshaName"));
+                            updElm15.click();
+                            WebElement updElm16 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkHogoshaTsudukigara"));
+                            updElm16.click();
+                            WebElement updElm17 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$btnGrpInp"));
+                            updElm17.click();
+                            //団体情報入力
+                            jse.executeScript("window.scrollBy(0,0400)", "");//600px下にスクロール
+                            WebElement updElm18 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkCorpFlag"));
+                            updElm18.click();
+                            WebElement updElm19 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkGroupName"));
+                            updElm19.click();
+                            WebElement updElm20 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkGroupKanaName"));
+                            updElm20.click();
+                            WebElement updElm21 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkGroupKind"));
+                            updElm21.click();
+                            WebElement updElm22 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkGroupNinzu"));
+                            updElm22.click();
+                            WebElement updElm23 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$btnFukuInp"));
+                            updElm23.click();
+                            //副代表者入力
+                            WebElement updElm24 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuUserID"));
+                            updElm24.click();
+                            WebElement updElm25 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuName"));
+                            updElm25.click();
+                            WebElement updElm26 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuKanaName"));
+                            updElm26.click();
+                            WebElement updElm27 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuPostCode"));
+                            updElm27.click();
+                            WebElement updElm28 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuAddress"));
+                            updElm28.click();
+                            WebElement updElm29 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuBirthDay"));
+                            updElm29.click();
+                            jse.executeScript("window.scrollBy(0,0600)", "");//600px下にスクロール
+                            WebElement updElm30 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuJitakuTel"));
+                            updElm30.click();
+                            WebElement updElm31 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuFax"));
+                            updElm31.click();
+                            WebElement updElm32 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuMobile"));
+                            updElm32.click();
+                            WebElement updElm33 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuTel"));
+                            updElm33.click();
+                            WebElement updElm34 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuEmail"));
+                            updElm34.click();
+                            WebElement updElm35 = driver
+                                    .findElement(By.name("ctl00$ContentPlaceHolder1$chkFukuSoufusakiKbn"));
+                            updElm35.click();
+                            WebElement updElm36 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$btnConfirm"));
+                            updElm36.click();
+                            //確認画面
+                            jse.executeScript("window.scrollBy(0,1800)", "");//600px下にスクロール
+                            WebElement updElm37 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$btnInsert"));
+                            updElm37.click();
+                            //更新完了画面
+                            WebElement updElm38 = driver.findElement(By.name("ctl00$ContentPlaceHolder1$btnMenu"));//メニューに戻る
+                            updElm38.click();
+                        }
+                        //                    System.out.println(url);
 
-                    //カレンダーが表示されて予約する日にちを指定--------------------------------------------------------------------------
-                        Thread.sleep(2000);
+                        WebElement element05 = driver
+                                .findElement(By.name("ctl00$ContentPlaceHolder1$btnMenuShinseiSrch"));
+                        element05.click();//施設予約検索をクリック
+                        //施設の予約検索オペレーション--------------------------------------------------------------------
+                        Thread.sleep(0500);//3秒待機
+                        driver.navigate().refresh(); //ページをリフレッシュ
+                        jse.executeScript("window.scrollBy(0,300)", "");//500px下にスクロール
+                        Select dropdown01 = new Select(driver
+                                .findElement(
+                                        By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$drpPurposeBunrui")));
+                        dropdown01.selectByVisibleText(yoyaku01.getUsePlace());//施設区分の選択
+                        Select dropdown02 = new Select(
+                                driver.findElement(
+                                        By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$drpPurpose")));
+                        dropdown02.selectByVisibleText(yoyaku01.getUsePurpose());//利用目的の選択
+                        WebElement element06 = driver
+                                .findElement(
+                                        By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$txtShisetsuMeisho"));
+                        element06.clear();//すでに文字が入っている場合のため、クリア処理
+                        element06.sendKeys(yoyaku01.getPlaceName());//施設名を入力する
+                        WebElement element07 = driver
+                                .findElement(By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$txtFromDate"));
+                        element07.sendKeys(yoyaku01.getStartDate());//検索範囲の開始日を入力する
+                        WebElement element08 = driver
+                                .findElement(By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$txtToDate"));
+                        element08.sendKeys(yoyaku01.getEndDate());//検索範囲の終了日を入力する
+                        Thread.sleep(1000);//3秒待機
+                        WebElement element09 = driver
+                                .findElement(By.name("ctl00$ContentPlaceHolder1$ShinseiKumiawaseInp1$btnSearch"));
+                        element09.click();//検索をクリック
+
+                        //カレンダーが表示されて予約する日にちを指定--------------------------------------------------------------------------
+                        Thread.sleep(0500);
                         WebElement element10 = driver.findElement(
                                 By.xpath("//a[contains(@title,'" + yoyaku01.getReserveDate() + "')]"));
                         element10.click();//カレンダー上の日付をクリック
@@ -166,14 +283,20 @@ public class MainSystem {
                         //つどーむ（スポーツ交流）の時はA面(=li.get(0))かB面(=li.get(1))を選択-------------------------
                         String placeName = yoyaku01.getPlaceName();
                         if (placeName.equals("スポーツ交流")) {
-                            Thread.sleep(2000);
-                            List<WebElement> li = driver.findElements(By.linkText("選択"));
+                            if (reserveDay.equals("13") || reserveDay.equals("29")) {
+
+                                Thread.sleep(1000);
+                                List<WebElement> li01 = driver.findElements(By.linkText("選択"));
+                                ;
+                                li01.get(0).click();
+                            }
+                            List<WebElement> li02 = driver.findElements(By.linkText("選択"));
                             ;
-                            Thread.sleep(2000);
+                            Thread.sleep(2500);
                             if (i <= 13) {
-                                li.get(0).click();
+                                li02.get(0).click();
                             } else if (i >= 14) {
-                                li.get(1).click();
+                                li02.get(1).click();
                             }
                         }
                         //曜日によって繰り返し処理の回数を変える(土日=2回,平日=4回)
@@ -219,7 +342,7 @@ public class MainSystem {
                     }
 
                 }
-                Thread.sleep(3000);
+                Thread.sleep(100);
                 //ログアウト---------------------------------------------------------
                 jse.executeScript("window.scrollBy(0,-600)", "");//600px上にスクロール
                 WebElement logout = driver.findElement(By.name("ctl00$btnLogout"));
@@ -239,7 +362,7 @@ public class MainSystem {
         } catch (InterruptedException e) {
             e.printStackTrace();
             lineNotify.notify("予約システムにエラーが発生しました。確認してください。");
-        }catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             e.printStackTrace();
             lineNotify.notify("予約システムにエラーが発生しました。確認してください。");
         }
